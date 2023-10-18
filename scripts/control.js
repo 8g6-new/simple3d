@@ -4,7 +4,6 @@ function control(socket,ranges,send){
         'MAX_FEEDRATE_mms':100,
         'MAX_0':220,'MAX_1':220,'MAX_2':250
     };
-    
 
     ['X','Y','Z'].forEach(n=>{
         socket.on('feedrate-'+n,(val)=>{
@@ -26,8 +25,7 @@ function control(socket,ranges,send){
                 ranges[n]['val'] += info[`MAX_${i}`]
             }
             else{
-                // await send(`G1 ${n}-${ranges[n]['val']} F${ranges['feedrate-'+n]}`)
-                console.log(`G1 ${n}-${ranges['stepsize-'+n]} F${ranges['feedrate-'+n]}`,ranges)
+                await send(`G1 ${n}-${ranges['stepsize-'+n]} F${ranges['feedrate-'+n]}`)
             }
             ranges[n]['cp'] = ranges[n]['val']
         })
@@ -37,8 +35,7 @@ function control(socket,ranges,send){
                 ranges[n]['val'] -= info[`MAX_${i}`]
             }
             else{
-                // await send(`G1 ${n}${ranges[n]['val']} F${ranges['feedrate-'+n]}`)
-                console.log(`G1 ${n}${ranges['stepsize-'+n]} F${ranges['feedrate-'+n]}`,ranges)
+                await send(`G1 ${n}${ranges['stepsize-'+n]} F${ranges['feedrate-'+n]}`)
             }
             ranges[n]['cp'] = ranges[n]['val']
         })

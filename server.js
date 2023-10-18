@@ -30,7 +30,7 @@ app.set('view engine', 'ejs')
 app.set('views', join(__dirname, 'views'));
 
 let ranges = {
-                  'feedrate-X':2200,'feedrate-Y':2200,'feedrate-Z':2200,
+                  'feedrate-X':2400,'feedrate-Y':2400,'feedrate-Z':2400,
                   'stepsize-X':10,'stepsize-Y':10,'stepsize-Z':10,
                   'X':{'cp':0,'val':0},
                   'Y':{'cp':0,'val':0},
