@@ -6,7 +6,7 @@
             <div class="bg-gray-800 p-4 shadow-md rounded-lg">
                 <h3 class="text-xl font-semibold mb-4 text-center"><%= n['dim'] %>-Axis</h3>
                 <div class="p-4">
-                    <h4 class="font-semibold mb-2 text-center">Feed Rate <div class="font-semibold mb-2" id="feedrate-<%= n['dim'] %>-val"></div></h4>
+                    <h4 class="font-semibold mb-2 text-center">Feed Rate <div class="font-semibold mb-2" id="feedrate-<%= n['dim'] %>-val">10</div></h4>
                     <input type="range" min="0" max="100" value="10" class="range" step="10" id="feedrate-<%= n['dim'] %>"/>
                     <div class="range-labels">
                         <% Array(11).fill(0).map((_, i) => i * 10).map(n => { %>

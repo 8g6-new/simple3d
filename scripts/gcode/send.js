@@ -2,7 +2,7 @@ const {exec}      = require('child_process')
 const {promisify} = require('util')
 const exe         = promisify(exec)
 
-async function run(gcode){
+async function send(gcode){
     const s = new Date().getTime()
     const {stdout,stderr} = await exe(`python control.py "${gcode}" "/dev/ttyUSB0" "115200"`)
     const e = new Date().getTime()
@@ -14,4 +14,4 @@ async function run(gcode){
     }
 }
 
-run('G1 X22 F2200')
+module.exports = send

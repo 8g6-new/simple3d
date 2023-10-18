@@ -7,6 +7,7 @@ let  htmls          = require('./htmls')
 const { Server } = require('socket.io');
 const { createServer } = require('node:http');
 const control  = require('./scripts/control');
+const send     = require('./scripts/gcode/send')
 
 
 const PORT = process.env.PORT || 3000;
@@ -30,7 +31,10 @@ app.set('views', join(__dirname, 'views'));
 
 let ranges = {
                   'feedrate-X':2200,'feedrate-Y':2200,'feedrate-Z':2200,
-                  'stepsize-X':0,'stepsize-Y':0,'stepsize-Z':0
+                  'stepsize-X':10,'stepsize-Y':10,'stepsize-Z':10,
+                  'X':0,
+                  'Y':0,
+                  'Z':0
                 };
 
 ['control','upload','printing'].forEach(n=>{
@@ -41,7 +45,7 @@ let ranges = {
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-    control(socket,ranges)
+    control(socket,ranges,send)
     
 });
 
