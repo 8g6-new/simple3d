@@ -1,0 +1,35 @@
+<main class="container mx-auto mt-4 flex flex-col justify-center items-center">
+    <h2 class="text-2xl font-semibold mb-4 text-center">Control Panel</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <% [{'dim':'X','L':'L','R':'R'},{'dim':'Y','L':'L','R':'R'},{'dim':'Z','L':'U','R':'D'}].map(n => { %>
+            <div class="bg-gray-800 p-4 shadow-md rounded-lg">
+                <h3 class="text-xl font-semibold mb-4 text-center"><%= n['dim'] %>-Axis</h3>
+                <div class="p-4">
+                    <h4 class="font-semibold mb-2 text-center">Feed Rate <div class="font-semibold mb-2" id="feedrate-<%= n['dim'] %>-val"></div></h4>
+                    <input type="range" min="0" max="100" value="10" class="range" step="10" id="feedrate-<%= n['dim'] %>"/>
+                    <div class="range-labels">
+                        <% Array(11).fill(0).map((_, i) => i * 10).map(n => { %>
+                            <span><%= n %></span>
+                        <% }); %>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h4 class="font-semibold mb-2 text-center">Step Size <div class="font-semibold mb-2" id="stepsize-<%= n['dim'] %>-val"></div></h4>
+                    <input type="range" min="0" max="100" value="10" class="range" step="10" id="stepsize-<%= n['dim'] %>"/>
+                    <div class="range-labels">
+                        <% Array(11).fill(0).map((_, i) => i * 10).map(n => { %>
+                            <span><%= n %></span>
+                        <% }); %>
+                    </div>
+                </div>
+                <button class="bg-gray-600 text-white hover:bg-gray-500 py-2 px-4 rounded-full float-left" id="<%= n['dim']+'L' %>">
+                    <%= n['L'] %>
+                </button>
+                <button class="bg-gray-600 text-white hover:bg-gray-500 py-2 px-4 rounded-full float-right" id="<%= n['dim']+'R' %>">
+                    <%= n['R'] %>
+                </button>
+            </div>
+        <% }); %>
+    </div>
+</main>
