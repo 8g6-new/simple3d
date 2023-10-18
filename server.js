@@ -32,13 +32,20 @@ app.set('views', join(__dirname, 'views'));
 let ranges = {
                   'feedrate-X':2200,'feedrate-Y':2200,'feedrate-Z':2200,
                   'stepsize-X':10,'stepsize-Y':10,'stepsize-Z':10,
-                  'X':0,
-                  'Y':0,
-                  'Z':0
+                  'X':{'cp':0,'val':0},
+                  'Y':{'cp':0,'val':0},
+                  'Z':{'cp':0,'val':0}
                 };
 
 ['control','upload','printing'].forEach(n=>{
-    app.get('/'+n, (req, res) => {
+    app.get('/'+n, async(req, res) => {
+        if(n=='control'){
+            await send('G28');
+            await send('G91');
+            ['X','Y','Z'].forEach(n=>{
+                ranges[n]['cp'] = 0
+            })
+        }
         res.render('refs/'+n);
     });
 })

@@ -21,22 +21,26 @@ function control(socket,ranges,send){
 
     ['X','Y','Z'].forEach(async(n,i)=>{
         socket.on(n+'L',async()=>{
-            ranges[n]-=ranges['stepsize-'+n]
-            if(ranges[n]<0){
-                ranges[n] += info[`MAX_${i}`]
+            ranges[n]['val']-=ranges['stepsize-'+n]
+            if(ranges[n]['val']<0){
+                ranges[n]['val'] += info[`MAX_${i}`]
             }
             else{
-                await send(`G1 ${n}-${ranges['stepsize-'+n]} F${ranges['feedrate-'+n]}`)
+                // await send(`G1 ${n}-${ranges[n]['val']} F${ranges['feedrate-'+n]}`)
+                console.log(`G1 ${n}-${ranges['stepsize-'+n]} F${ranges['feedrate-'+n]}`,ranges)
             }
+            ranges[n]['cp'] = ranges[n]['val']
         })
         socket.on(n+'R',async()=>{
-            ranges[n]+=ranges['stepsize-'+n]
-            if(ranges[n]>info[`MAX_${i}`]){
-                ranges[n] -= info[`MAX_${i}`]
+            ranges[n]['val']+=ranges['stepsize-'+n]
+            if(ranges[n]['val']>info[`MAX_${i}`]){
+                ranges[n]['val'] -= info[`MAX_${i}`]
             }
             else{
-                await send(`G1 ${n}${ranges['stepsize-'+n]} F${ranges['feedrate-'+n]}`)
+                // await send(`G1 ${n}${ranges[n]['val']} F${ranges['feedrate-'+n]}`)
+                console.log(`G1 ${n}${ranges['stepsize-'+n]} F${ranges['feedrate-'+n]}`,ranges)
             }
+            ranges[n]['cp'] = ranges[n]['val']
         })
         
     })

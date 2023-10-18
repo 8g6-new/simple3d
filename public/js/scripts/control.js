@@ -1,4 +1,4 @@
-const socket = io('http://localhost:3001/')
+const socket = io('http://192.168.1.5:3001/')
 
 
 const info = {
