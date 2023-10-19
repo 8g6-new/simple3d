@@ -1,11 +1,11 @@
-function save(files,n){
+function save(file,name,path){
     return new Promise((resolve)=>{
-        const uploadedFile = files[n];
-        const uploadPath = __dirname + '/uploads/' + uploadedFile.name;
+        const uploadedFile = file[name];
+        const uploadPath = path + uploadedFile.name;
 
-        let out  = {'status':'File uploaded','filename':uploadedFile.name}
+        let out  = {'status':'File uploaded','filename':uploadedFile.name,'size':uploadedFile.size,'encoding':uploadedFile.encoding}
     
-        if (!files[n] || Object.keys(files[n]).length === 0) {
+        if (!file || Object.keys(file).length === 0) {
             out['status'] = 'No files uploaded'
             return resolve(out)
         }
