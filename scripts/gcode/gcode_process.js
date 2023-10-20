@@ -117,4 +117,6 @@ async function convert(file){
     await writeFile(fn+'.json',JSON.stringify(out))
 }
 
-convert('../../files/uploads/AKNEO_Tiny_Tester.gcode')
+module.exports = { 
+    convert,jsonfy,check
+}

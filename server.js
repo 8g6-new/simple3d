@@ -9,6 +9,11 @@ const { createServer } = require('node:http');
 const control  = require('./scripts/control');
 const send     = require('./scripts/gcode/send')
 const save     = require('./scripts/file_upload')
+const { 
+    convert,
+    jsonfy,
+    check
+}               = require('./scripts/gcode/gcode_process')
 
 
 const PORT = process.env.PORT || 3000;
@@ -59,9 +64,8 @@ io.on('connection', (socket) => {
 
 app.post('/upload', async(req, res) => {
     let     out = await save(req.files,'uploadedFile',__dirname + '/files/uploads/')
-    
     if(out['status']=='File uploaded')
-      res.render('refs/upload');
+      res.render('refs/status');
     else
       res.status(500).send(out['err']);
 });
