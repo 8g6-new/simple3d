@@ -1,6 +1,6 @@
 function info_table(info){
     return new Promise((resolve)=>{
-        let table = '<table class="table-auto w-1/2">'
+        let table = '<div class="overflow-x-auto"><table class="table">'
         table+=`<tbody>
                 <tr>
                     <td class="font-bold text-lg mb-2 text-center" colspan="2">Information</td>
@@ -13,7 +13,7 @@ function info_table(info){
                     </tr>`
         })
         
-        table += '</tbody></table>'
+        table += '</tbody></table></div>'
     
        return resolve(table)
     })

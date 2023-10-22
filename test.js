@@ -14,7 +14,7 @@ const io = new Server(server,{
 
 async function run(){
    let data  = await convert('./files/uploads/AKNEO_Tiny_Tester.gcode','./files/processed/AKNEO_Tiny_Tester.json')
-   await running_code(data['layers'],data['len'],'./files/status_db/'+'AKNEO_Tiny_Tester.gcode'.replace('.gcode','.txt'))
+   await running_code(data['layers'],data['len'],'./files/status_db/'+'AKNEO_Tiny_Tester.gcode'.replace('.gcode','.txt'),io)
 }
 
 

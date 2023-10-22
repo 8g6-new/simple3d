@@ -1,18 +1,33 @@
-<div>
-    <%- table %>
+
+
+<div class="flex flex-row">
+    <div class="card w-96 bg-base-100 shadow-xl m-4 p-4 ">
+        <%- table %>
+    </div>
+    <div class="card w-96 bg-base-100 shadow-xl m-4 p-4 justify-center items-center" id="div">
+    </div>
+
 </div>
 
-<div class="h1" id="div">
 
-</div>
+
 <script>
     socket.on('connect',()=>{
-        console.log('conncted')
-    })
-    socket.on('loop', (data) => {
-        console.log(data)
-        document.getElementById('div').innerText = `LAYER : ${data['layer']} <br> ${data['gi']}/${data['gi_len']}`;
-        console.log(`LAYER : ${data['layer']} <br> ${data['gi']}/${data['gi_len']}`)
+        console.log('connted')
+        socket.on('loop', (data) => {
+            console.log(data)
+            let progress_layer = (data['layer']+1)*100/data['li_max']
+            let progress_gi    = (data['gi']+1)*100/data['gi_len']
+            let rrr = `
+            LAYER : ${data['layer']} <div class="m-4 p-4  radial-progress bg-primary text-primary-content border-4 border-primary" style="--value:${progress_layer};">${progress_layer.toFixed(2)}%</div>
+            ${data['gi']}/${data['gi_len']} : <div class="m-4 p-4  radial-progress bg-primary text-primary-content border-4 border-primary" style="--value:${progress_gi};">${progress_gi.toFixed(2)}%</div>
+            `;
+
+           let t = timer((data['current']/1000) * (data['full']-(data['cur'])))
+           document.getElementById('div').innerHTML = rrr+t+'<br>'+timer(data['time'])
+
+            console.log(`LAYER : ${data['layer']} <br> ${data['gi']}/${data['gi_len']}`)
+        })
     })
 </script>
 

@@ -13,9 +13,6 @@ const {
 const {
     info_table
 }                = require('./scripts/funs');
-const { setTimeout } = require('timers/promises');
-const {readdir}  = require('fs').promises
-
 
 const PORT = process.env.PORT || 3000;
 
@@ -27,6 +24,8 @@ const io = new Server(server,{
         origin:'*'
     }
 });
+
+let TABLE;
 
 
 app.use(fileUpload());
@@ -46,6 +45,12 @@ let ranges =    {
                   'Z':{'cp':0,'val':0}
                 };
 
+                
+io.on('connection', () => {
+    console.log('a user connected ','server')
+});
+
+
 ['control','upload','printing'].forEach(n=>{
     app.get('/'+n, async(req, res) => {
         if(n=='control'){
@@ -55,60 +60,35 @@ let ranges =    {
                 ranges[n]['cp'] = 0
             })
         }
-        res.render('refs/'+n);
+        if(n=='printing' && TABLE){
+            let table = TABLE
+            res.render('refs/'+n,{table})
+        }
+        else{
+            res.render('refs/'+n)
+        }
     });
 })
 
 
-io.on('connection', (socket) => {
-
-    console.log('a user connected')
-
-    app.get('/', async (req, res) => {
-        try {
-            await control(socket, ranges,send);
-            const files = await readdir('./files/status_db/');
-            const file = files[0];
-            if (file) {
-                const data = require('./files/processed/' + file.replace('.txt', '.gcode'));
-                await running_code(
-                    data['layers'],
-                        data['len'], 
-                    './files/status_db/' + file.replace('.gcode', '.txt'),
-                    socket
-                );
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    });
-    
-    app.post('/upload', async (req, res) => {
-        
-        const out = await save(req.files, 'uploadedFile', __dirname + '/files/uploads/');
-        if (out['status'] === 'File uploaded') {
-            const data  = await convert('files/uploads/' + out['filename'], 'files/processed/');
-            const table = await info_table(data['info']);
-            res.render('refs/printing',{table});
-            await running_code(
-                data['layers'], 
-                data['len'], 
-                './files/status_db/' + out['filename'].replace('.gcode', '.txt'),
-                io
-            );
-           
-
-        } else {
-            res.send(out['err']);
-        }
-        // } catch (e) {
-        //     console.error(e);
-        //     res.status(500).send('Internal Server Error');
-        // }
-    });
+app.post('/upload', async (req, res) => {
+    const out = await save(req.files, 'uploadedFile', __dirname + '/files/uploads/');
+    if (out['status'] === 'File uploaded') {
+        const data  = await convert('files/uploads/' + out['filename'], 'files/processed/');
+        const table = await info_table(data['info']);
+        TABLE = table
+        res.redirect('printing')
+        await running_code(
+            data['layers'], 
+            data['len'], 
+            data['times'],
+            './files/status_db/' + out['filename'].replace('.gcode', '.txt'),
+            io
+        );
+    } else {
+        res.send(out['err']);
+    }
 });
-
-
  
 app.listen(PORT,()=>{
     console.log(`Server Started @ ${PORT}`)

@@ -1,5 +1,5 @@
 const {readFile,writeFile,unlink} = require('fs').promises
-const send                 = (g)=> new Promise((resolve)=>{console.log(g);setInterval(resolve,3)})
+const send                 = ()=> new Promise((resolve)=>{setInterval(resolve,80)})
   
 async function convert(input,output){
 
@@ -68,7 +68,7 @@ async function convert(input,output){
     layers[0]['TIME_ELAPSED'] = 0
 
     const DATA = {
-        'info':INFO,'layers':layers,'len':tt.length
+        'info':INFO,'layers':layers,'len':tt.length,'times':times.map(n=>parseFloat(n[1]))
     }
 
     await writeFile(output+fn,JSON.stringify(DATA))
@@ -76,7 +76,7 @@ async function convert(input,output){
     return DATA
 }
 
-async function running_code(layers,len,file_path,io){
+async function running_code(layers,len,times,file_path,io){
 
     let status = [0,0]
 
@@ -88,15 +88,33 @@ async function running_code(layers,len,file_path,io){
         status = [0,0]
     }
 
-
-    for(let l=0;l<len;l++){
-        for(let gi=0;gi<layers[l]['gcode'].length;gi++){
+    let full=0
+    for(let l=status[0];l<len;l++){
+        for(let gi=status[1];gi<layers[l]['gcode'].length;gi++){
+            full+=1
+        }
+    }
+    let ttt = status[2];
+    for(let l=status[0];l<len;l++){
+        for(let gi=status[1];gi<layers[l]['gcode'].length;gi++){
+            let s = new Date().getTime()
             await Promise.allSettled([
                 send(layers[l]['gcode'][gi]),
-                writeFile(file_path,`${l} ${gi}`)
+                writeFile(file_path,`${l} ${gi} ${ttt}`)
             ])
-            io.emit('loop',{'layer':l,'gi':gi,'gi_len':layers[l]['gcode'].length});
-            console.log({'layer':l,'gi':gi,'gi_len':layers[l]['gcode'].length})
+            let e = new Date().getTime()
+            io.emit('loop',{
+                'layer':l,
+                'gi':gi,
+                'gi_len':parseInt(layers[l]['gcode'].length),
+                'li_max':parseInt(len),
+                'time':parseInt(times[len-2]-times[l]),
+                'current':e-s,
+                'full':full,
+                'cur':ttt
+            });
+            console.log('send ',layers[l]['gcode'][gi])
+            ttt++
         }
     }
 
