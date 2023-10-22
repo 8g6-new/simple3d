@@ -1,2 +1,19 @@
-<div class="flex justify-center">
+<div>
+    <%- table %>
 </div>
+
+<div class="h1" id="div">
+
+</div>
+<script>
+    socket.on('connect',()=>{
+        console.log('conncted')
+    })
+    socket.on('loop', (data) => {
+        console.log(data)
+        document.getElementById('div').innerText = `LAYER : ${data['layer']} <br> ${data['gi']}/${data['gi_len']}`;
+        console.log(`LAYER : ${data['layer']} <br> ${data['gi']}/${data['gi_len']}`)
+    })
+</script>
+
+
